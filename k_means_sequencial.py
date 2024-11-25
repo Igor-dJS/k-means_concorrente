@@ -1,7 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-
 def calcula_dist(p1, p2):
     """
     :param p1: primeiro ponto
@@ -15,7 +14,6 @@ def calcula_dist(p1, p2):
         soma += (p1[i] - p2[i]) ** 2
 
     return soma ** (1/2)
-
 
 def k_means(n_clusters, data):
     """
@@ -36,9 +34,8 @@ def k_means(n_clusters, data):
 
     # cluster_centers = tuple(cluster_centers)
 
-    # Utilizando os primeirosdados como os primeiros "n_clusters" 
-    cluster_centers = set([tuple(data[i, :-1]) for i in range(n_clusters)])
-
+    # Utilizando os primeiros dados como os primeiros "n_clusters"
+    cluster_centers = set([tuple(data[i, :-1]) for i in range(n_clusters)]) #por qual motivo usar os primeiros e não centróides aleatórios?
 
     # Listas para saber se as médias dos pontos mudaram a cada iteração
     centers_before = None
@@ -77,7 +74,6 @@ def k_means(n_clusters, data):
         cluster_centers = tuple(centers_after)
 
     return centers
-
 
 def plotar(data, result, cols):
     if type(list(list(result.values())[0])[0]) == np.int64:

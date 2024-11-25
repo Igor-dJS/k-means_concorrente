@@ -2,7 +2,8 @@ import numpy as np
 from multiprocessing import shared_memory
 
 # Função executada pelos processos
-def Calculadores(process_id, shared_mem_centroides, shared_mem_data, shape_centroides, shape_data, dtype_centroides, dtype_data, start_row, end_row, num_processos, num_centroides, lock, lock_soma, counter, sem_m, sem_c, stop_condition):
+def Calculadores(process_id, shared_mem_centroides, shared_mem_data, shape_centroides, shape_data, dtype_centroides,
+                 dtype_data, start_row, end_row, num_processos, num_centroides, lock, lock_soma, counter, sem_m, sem_c, stop_condition):
     # Acessa a memória compartilhada dos centroides
     existing_shm1 = shared_memory.SharedMemory(name=shared_mem_centroides)
     centroides = np.ndarray(shape_centroides, dtype=dtype_centroides, buffer=existing_shm1.buf)
@@ -17,7 +18,7 @@ def Calculadores(process_id, shared_mem_centroides, shared_mem_data, shape_centr
 
     # Loop que será executado enquanto a main não verificar que os centróides não variaram e decidir que acabou a execução
     while True:
-        # Faz execução de cáculo da distância dos centróides até os pontos elege ao ponto o seu centróide
+        # Faz execução de cálculo da distância dos centróides até os pontos elege ao ponto o seu centróide
         # e de alguma forma faz a soma de cada centróide e envia a main
         for ponto in work_data:
             min_center = None
@@ -26,10 +27,10 @@ def Calculadores(process_id, shared_mem_centroides, shared_mem_data, shape_centr
                 dist = calcula_dist(ponto, center)
                 if dist < min_dist:
                     min_center = index # Se for o atual menor ponto salva o identificador do centroide
-                    min_dist = dist 
+                    min_dist = dist
             ponto[-2] = min_center # Atribui à coluna de centroide dos dados a qual centroide pertence atualmente
 
-            # Soma a área dos novos centroides o valor dos dados para posterior cálculo na main da média
+            # Soma a área dos novos centroides, o valor dos dados para posterior cálculo na main da média
             centroide_atualizar = min_center + num_centroides # Os centroides a serem atualizados estão no segundo bloco
             with lock_soma:
                 for i in range(len(center) - 1):
@@ -53,7 +54,7 @@ def Calculadores(process_id, shared_mem_centroides, shared_mem_data, shape_centr
         
         # Verifica se a main determinou que os processos devem parar
         if stop_condition.value == 1:
-            print(f"Processo {process_id} interrompido por condição de parada.")
+            #print(f"Processo {process_id} interrompido por condição de parada.")
             break
 
 
