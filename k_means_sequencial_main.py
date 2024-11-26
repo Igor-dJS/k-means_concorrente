@@ -22,16 +22,22 @@ class App(QWidget):
     def getText(self):
         end = False
         list_col = []
-        d1,okPressed1=QInputDialog.getText(self, "Arquivo", "Caminho")
-        d2,okPressed2=QInputDialog.getInt(self, "Centroides", "Qtde:")
+        # d1,okPressed1=QInputDialog.getText(self, "Arquivo", "Caminho")
+        # d2,okPressed2=QInputDialog.getInt(self, "Centroides", "Qtde:")
         
-        while(not end):
-            d4,okPressed4=QInputDialog.getText(self, "Nova Coluna", "Nome")
+        # while(not end):
+        #     d4,okPressed4=QInputDialog.getText(self, "Nova Coluna", "Nome")
 
-            if d4 == "" and okPressed4:
-                end = True
-            else:
-                list_col.append(d4)
+        #     if d4 == "" and okPressed4:
+        #         end = True
+        #     else:
+        #         list_col.append(d4)
+
+        okPressed1 = True
+        okPressed2 = True
+        d1 = "./datasets/Iris.csv"
+        d2 = 3
+        list_col = ["SepalLengthCm", "SepalWidthCm", "PetalLengthCm"]
 
         if okPressed1 and okPressed2:
             df = pd.read_csv(d1, delimiter="," )
@@ -47,7 +53,7 @@ class App(QWidget):
             list_col_centroides = list_col.copy()
             list_col_centroides.remove("index")
             df_tmp = pd.DataFrame(centroides,  columns = list_col_centroides)
-            df_tmp.to_csv("./logs/Concorrente/log0", index = False)
+            df_tmp.to_csv(f"./logs/Sequencial/k_{d2}_centers", index = False)
 
             # Salvar csv dos dados com seu index e centróide a qual pertence
             list_dataframes = []
@@ -60,7 +66,7 @@ class App(QWidget):
                 value_centroide += 1
 
             df_concatenado = pd.concat(list_dataframes, ignore_index=True)
-            df_concatenado.to_csv("./logs/Concorrente/log1", index = False)
+            df_concatenado.to_csv(f"./logs/Sequencial/k_{d2}_data", index = False)
 
             
 

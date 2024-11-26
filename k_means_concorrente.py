@@ -53,7 +53,6 @@ def Calculadores(process_id, shared_mem_centroides, shared_mem_data, shape_centr
         
         # Verifica se a main determinou que os processos devem parar
         if stop_condition.value == 1:
-            print(f"Processo {process_id} interrompido por condição de parada.")
             break
 
 

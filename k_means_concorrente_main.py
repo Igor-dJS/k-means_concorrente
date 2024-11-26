@@ -52,7 +52,7 @@ class App(QWidget):
         okPressed1 = True
         okPressed2 = True
         d1 = "./datasets/Iris.csv"
-        d2 = 3
+        d2 = 4
         list_col = ["SepalLengthCm", "SepalWidthCm", "PetalLengthCm"]
 
         if okPressed1 and okPressed2:
@@ -144,21 +144,17 @@ class App(QWidget):
                 for i in range(num_processos):
                     sem_c.release()
 
-            print("Main terminou execução!")
-
             # Espera todos os processos terminarem
             for p in processos:
                 p.join()
 
-            print(f"Algoritmo finalizou com {c} iterações")
-
             # Salva csv dos centroides
             df_tmp = pd.DataFrame(shared_array1[:d2,:-1],  columns = list_col[0:-2])
-            df_tmp.to_csv("./logs/Concorrente/log0", index = False)
+            df_tmp.to_csv(f"./logs/Concorrente/k_{d2}_p_{num_processos}_centers", index = False)
 
             # Salva csv dos dados com as colunas de qual centroide pertence e seu índice no arquivo original
             df_tmp = pd.DataFrame(shared_array2,  columns = list_col)
-            df_tmp.to_csv("./logs/Concorrente/log1", index = False)
+            df_tmp.to_csv(f"./logs/Concorrente/k_{d2}_p_{num_processos}_data", index = False)
 
             # Fechar as referências à memória compartilhada
             shm1.close()  # Fecha a referência ao shm1

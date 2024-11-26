@@ -77,39 +77,3 @@ def k_means(n_clusters, data):
         cluster_centers = tuple(centers_after)
 
     return centers
-
-
-def plotar(data, result, cols):
-    if type(list(list(result.values())[0])[0]) == np.int64:
-        plt.hlines(1, 1, max(data) + 1)
-        plt.xlim(0, max(data) + 1)
-        plt.ylim(0.5, 1.5)
-
-        for item in result:
-            lista = list(result[item])
-            y = np.ones(np.shape(lista))
-            plt.plot(lista, y, '|', ms=40)
-        plt.axis('off')
-        plt.show()
-    else:
-        # plt.figure(figsize=(12, 12))
-        if data.shape[1] == 3:
-            ax = plt.axes(projection='3d')
-            ax.set_xlabel(cols[0])
-            ax.set_ylabel(cols[1])
-            ax.set_zlabel(cols[2])
-        else:
-            plt.xlabel(cols[0])
-            plt.ylabel(cols[1])
-        for item in result:
-            array = np.array(list(result[item]))
-            if array.shape[1] == 2:
-                plt.scatter(array[:, 0], array[:, 1])
-            else:
-                ax.scatter(array[:, 0], array[:, 1], array[:, 2])
-        centroides = np.array(list(result.keys()))
-        if centroides.shape[1] == 2:
-            plt.scatter(centroides[:, 0], centroides[:, 1], marker="D",s=60, c="red")
-        else:
-            ax.scatter(centroides[:, 0], centroides[:, 1], centroides[:, 2],marker="D", s=60, c="red")
-        plt.show()
