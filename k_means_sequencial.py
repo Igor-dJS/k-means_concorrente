@@ -75,6 +75,7 @@ def k_means(n_clusters, data):
 
     return centers
 
+
 def plotar(data, result, cols):
     if type(list(list(result.values())[0])[0]) == np.int64:
         plt.hlines(1, 1, max(data) + 1)
