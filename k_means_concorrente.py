@@ -16,6 +16,9 @@ def Calculadores(process_id, shared_mem_centroides, shared_mem_data, shape_centr
     work_centroides = centroides[0:num_centroides, :]
     work_data = data[start_row:end_row, :]
 
+    # Soma parcial
+    centroides_acumulado = np.zeros((num_centroides, shape_centroides[1]))
+
     # Loop que será executado enquanto a main não verificar que os centróides não variaram e decidir que acabou a execução
     while True:
         # Faz execução de cálculo da distância dos centróides até os pontos elege ao ponto o seu centróide
@@ -30,13 +33,18 @@ def Calculadores(process_id, shared_mem_centroides, shared_mem_data, shape_centr
                     min_dist = dist
             ponto[-2] = min_center # Atribui à coluna de centroide dos dados a qual centroide pertence atualmente
 
-            # Soma a área dos novos centroides, o valor dos dados para posterior cálculo na main da média
-            centroide_atualizar = min_center + num_centroides # Os centroides a serem atualizados estão no segundo bloco
-            with lock_soma:
-                for i in range(len(center) - 1):
-                    centroides[centroide_atualizar, i] += ponto[i] # Soma valor da coluna i do dado a coluna i do centroide a ser atualizado
-                # Contabiliza também que mais um dado foi somado àquele centroide
-                centroides[centroide_atualizar, -1] += 1
+            for i in range(shape_centroides[1] - 1):
+                centroides_acumulado[min_center, i] += ponto[i] # Soma valor da coluna i do dado a coluna i do centroide a ser atualizado
+            # Contabiliza também que mais um dado foi somado àquele centroide
+            centroides_acumulado[min_center, -1] += 1
+
+            # Jogar valores no acumulado da Main
+        with lock_soma:
+            for i in range(num_centroides, shape_centroides[0]): # Percorre no bloco de linhas de baixo
+                for j in range(shape_centroides[1]): # Percorre toda a coluna dos centroides
+                    shift_linha = i - num_centroides
+                    centroides[i, j] += centroides_acumulado[shift_linha, j] # Soma valor da coluna i do dado a coluna i do centroide a ser atualizado
+                    centroides_acumulado[shift_linha, j] = 0
         # Fim da rodada para os calculadores
 
         # A cada processo que termina sua execução, incrementa o contador de processos

@@ -15,10 +15,8 @@ lock = Lock()          # Lock para garantir que o contador é atualizado de form
 lock_soma = Lock()     # Lock para garantir que os processos não terão condição de corrida nos dados dos centroides sendo atualizados
 counter = Value('i', 0)        # Contador de processos que terminaram a rodada
 stop_condition = Value('i', 0) # Condição de parada
-c = 0  # Contador de iterações/rodadas do algoritmo
 
 def main():
-    global c
 
     if len(sys.argv) < 4:
         print("Uso: python k_means_concorrente_main.py <dataset_path> <n_clusters> <num_processos> <output_log>(opcional)")
@@ -41,9 +39,11 @@ def main():
         df = df[iris_columns]
 
     # Transforma o index em uma coluna também para rastrear posteriormente as instâncias e converte para numpy array
+    list_col = df.columns.tolist()
     df["centroide"] = 0
     df = df.reset_index(drop=False)
-    list_col = df.columns.tolist()
+    list_col.append("centroide")
+    list_col.append("index")
     data = df[list_col].to_numpy()
 
     # Número de linhas no dataset
@@ -126,13 +126,9 @@ def main():
         for _ in range(num_processos):
             sem_c.release()
 
-    #print("Main terminou execução!")
-
     # Pega tempo final do processamento, calcula e exibe quanto tempo levou
     fim = time.time()
     delta = fim - inicio
-
-    #print(f"Tempo de processamento: {delta:.5f} segundos")
 
     # Salvar processos, pontos e tempo de processamento no arquivo output_log, se fornecido
     if output_log:
@@ -148,18 +144,16 @@ def main():
     for p in processos:
         p.join()
 
-    #print(f"Algoritmo finalizou com {c} iterações")
-
     # Salva csv dos centroides
     centroides = shared_array1[:n_clusters, :-1]
     df_centroides = pd.DataFrame(centroides, columns=list_col[0:-2])
     if not os.path.exists("./logs/Concorrente"):
         os.makedirs("./logs/Concorrente")
-    df_centroides.to_csv("./logs/Concorrente/log0", index=False)
+    df_centroides.to_csv(f"./logs/Concorrente/k_{n_clusters}_p_{num_processos}_centers", index = False)
 
     # Salva csv dos dados com as colunas de qual centroide pertence e seu índice no arquivo original
     df_dados = pd.DataFrame(shared_array2, columns=list_col)
-    df_dados.to_csv("./logs/Concorrente/log1", index=False)
+    df_dados.to_csv(f"./logs/Concorrente/k_{n_clusters}_p_{num_processos}_data", index = False)
 
     # Fechar as referências à memória compartilhada
     shm1.close()  # Fecha a referência ao shm1

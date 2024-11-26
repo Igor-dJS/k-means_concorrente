@@ -58,8 +58,8 @@ def main():
     df_centroides = pd.DataFrame(centroides, columns=list_col_centroides)
     if not os.path.exists("./logs/Sequencial"):
         os.makedirs("./logs/Sequencial")
-    df_centroides.to_csv("./logs/Sequencial/log0", index=False)
-
+    df_centroides.to_csv(f"./logs/Sequencial/k_{n_clusters}_centers", index = False)
+        
     # Salvar csv dos dados com seu index e centróide a qual pertence
     list_dataframes = []
     value_centroide = 0
@@ -71,7 +71,7 @@ def main():
         value_centroide += 1
 
     df_concatenado = pd.concat(list_dataframes, ignore_index=True)
-    df_concatenado.to_csv("./logs/Sequencial/log1", index=False)
-
+    df_concatenado.to_csv(f"./logs/Sequencial/k_{n_clusters}_data", index = False)
+    
 if __name__ == '__main__':
     main()
