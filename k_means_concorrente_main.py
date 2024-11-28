@@ -9,19 +9,20 @@ from k_means_concorrente import *
 import time
 
 # Variáveis Globais
-sem_m = Semaphore(0)  # Semáforo para controle da main esperar os processos
-sem_c = Semaphore(0)  # Semáforo para os processos esperarem a main liberá-los para próxima rodada, verificando antes a stop_condition
-lock = Lock()          # Lock para garantir que o contador é atualizado de forma atômica
+sem_m = Semaphore(0)  # Semáforo para controle da Main esperar os processos
+sem_c = Semaphore(0)  # Semáforo para os processos esperarem a main liberá-los para próxima iteração, verificando antes a stop_condition
+lock = Lock()          # Lock para garantir que o contador de processos terminados na iteração é atualizado de forma atômica
 lock_soma = Lock()     # Lock para garantir que os processos não terão condição de corrida nos dados dos centroides sendo atualizados
-counter = Value('i', 0)        # Contador de processos que terminaram a rodada
-stop_condition = Value('i', 0) # Condição de parada
+counter = Value('i', 0)        # Contador de processos que terminaram a iteração
+stop_condition = Value('i', 0) # Condição de parada da Main para comunicar os processos
 
 def main():
-
+    # Controle dos argumentos
     if len(sys.argv) < 4:
         print("Uso: python k_means_concorrente_main.py <dataset_path> <n_clusters> <num_processos> <output_log>(opcional)")
         return
-
+    
+    # Lê dados da linha de comando
     dataset_path = sys.argv[1]
     n_clusters = int(sys.argv[2])
     num_processos = int(sys.argv[3])  # Número de processos concorrentes
@@ -49,12 +50,14 @@ def main():
     # Número de linhas no dataset
     num_linhas = data.shape[0]
 
-    # Obtém os centróides iniciais utilizando as primeiras linhas e ignorando a coluna de index (centróides não são instâncias) e a qual centroide pertence
-    # Além disso temos o dobro de linhas onde o segundo bloco de linhas será utilizado para cálculo da próxima rodada com a nova
-    # posição dos centróides
-    tuple_zeros = tuple(0 for _ in range(len(list_col) - 1))
-    list_for_centers = [tuple(data[i, :-1]) for i in range(n_clusters)]
-    list_for_centers += [tuple_zeros for _ in range(n_clusters)]
+    # Obtém os centróides iniciais utilizando as primeiras linhas e ignorando a coluna de index (centróides não são instâncias e não têm index consequentemente)
+    # Além disso temos o dobro de linhas onde o segundo bloco de linhas será utilizado para cálculo da próxima iteração com a nova posição dos centróides
+    # Note que nossos centroides têm uma coluna extra que para o primeiro bloco de linha não tem funcionalidade, mas para o segundo tem a finalidade de armazenar
+    # A quantidade de pontos que estão associados àquele centroide naquela iteração e é usado pela Main para obter a nova posiçõa do centroide dividindo as colunas
+    # Com as somas acumuladas por esse valor
+    tuple_zeros = tuple(0 for _ in range(len(list_col) - 1)) # Cria uma tupla de zeros com tamanho para as colunas de do dataset mais uma coluna com a função já descrita acima
+    list_for_centers = [tuple(data[i, :-1]) for i in range(n_clusters)] # Utiliza as primeiras linhas do dataset para serem os centroides iniciais
+    list_for_centers += [tuple_zeros for _ in range(n_clusters)] # Bloco de baixo começa zerado para receber acumulado posteriormente
     cluster_centers = np.array(list_for_centers)
 
     # Número de colunas nos centróides
@@ -80,7 +83,7 @@ def main():
     # Cria e dispara os processos
     for i in range(num_processos):
         start_row = i * step
-        end_row = (i + 1) * step if (i < num_processos - 1) else num_linhas  #Ultimo processo processa até num_linhas (última linha)
+        end_row = (i + 1) * step if (i < num_processos - 1) else num_linhas  # Ultimo processo processa até num_linhas (última linha)
         p = Process(target=Calculadores, 
                     args=(i, shm1.name, shm2.name, cluster_centers.shape, data.shape, cluster_centers.dtype, 
                           data.dtype, start_row, end_row, num_processos, n_clusters, lock, lock_soma, counter, sem_m, sem_c, stop_condition))
@@ -89,8 +92,7 @@ def main():
 
     while stop_condition.value == 0:
         # Main aguardando todos os processos completarem a rodada.
-
-        # Espera até que o último processo avise a main
+        # Espera até que o último processo desbloqueie a Main
         sem_m.acquire()
 
         # Atualizar valor dos novos centroides no segundo bloco (que acumula os valores para cálculo dos novos centróides com média dos pontos de cada cluster)
@@ -120,13 +122,11 @@ def main():
                     shared_array1[i + n_clusters, j] = 0  # Zera as posições dos centróides das somas das coordenadas
                 shared_array1[i + n_clusters, -1] = 0  # Zera coluna da quantidade de pontos que pertencem ao centróide
 
-        c += 1  # Conta número de iterações/rodadas que o algoritmo teve
-
         # Libera os processos para a próxima rodada
         for _ in range(num_processos):
             sem_c.release()
 
-    # Pega tempo final do processamento, calcula e exibe quanto tempo levou
+    # Pega tempo final do processamento e calcula quanto tempo levou
     fim = time.time()
     delta = fim - inicio
 
@@ -151,7 +151,7 @@ def main():
         os.makedirs("./logs/Concorrente")
     df_centroides.to_csv(f"./logs/Concorrente/k_{n_clusters}_p_{num_processos}_centers", index = False)
 
-    # Salva csv dos dados com as colunas de qual centroide pertence e seu índice no arquivo original
+    # Salva csv dos dados com as colunas de qual centroide pertence e seu index no arquivo original
     df_dados = pd.DataFrame(shared_array2, columns=list_col)
     df_dados.to_csv(f"./logs/Concorrente/k_{n_clusters}_p_{num_processos}_data", index = False)
 

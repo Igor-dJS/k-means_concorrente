@@ -5,7 +5,7 @@ def calcula_dist(p1, p2):
     """
     :param p1: primeiro ponto
     :param p2: segundo ponto
-    :return: distância entre o primeiro e segundo ponto
+    :return: distância euclidiana entre o primeiro e segundo ponto
     """
     
     soma = 0
@@ -19,7 +19,7 @@ def k_means(n_clusters, data):
     """
     :param n_clusters: número de clusters
     :param data: dados
-    :return: dicionário onde a chave é o centroide e o valor associado os pontos próximos a ele
+    :return: dicionário onde as chaves são os centroides e o valore associados os pontos pertecentes ao centroide
     """
     
     qtde_cols = data.shape[1] # obtém a quantidade de colunas
@@ -46,7 +46,7 @@ def k_means(n_clusters, data):
         centers_before = centers_after
 
         # Dicionário de pontos por centroides
-        # Temos como chave a tupla com os valores 
+        # Temos como chave a tupla com os valores de cada coluna do centroide
         centers = dict(zip(cluster_centers, [set() for _ in range(n_clusters)]))
 
         # Associa cada ponto ao seu centroide mais próximo
@@ -64,9 +64,9 @@ def k_means(n_clusters, data):
         centers_after = []
         for center in centers:
             ponto_medio = []
-            for i in range(qtde_cols - 1): # verificar se é pra desconsiderar última coluna que é o index!!!!!!!!!!!!!!!!
-                soma = sum([col[i] for col in centers[center]]) #
-                media = round(soma / len(centers[center]), 5) # arredondadno número da coluna do contreóide em 5 casas decimais
+            for i in range(qtde_cols - 1): # Desconsiderar última coluna que é o index que veio do dataset. Necessário para rastrear a relação com o dataset de entrada.
+                soma = sum([col[i] for col in centers[center]]) # Soma os valores dos pontos associados ao centroide na dimensão/coluna i
+                media = round(soma / len(centers[center]), 5) # Arredondadno número da coluna do contreóide em 5 casas decimais
                 ponto_medio.append(media)
 
             centers_after.append(tuple(ponto_medio))

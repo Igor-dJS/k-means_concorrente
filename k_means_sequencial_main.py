@@ -6,10 +6,12 @@ import time
 from k_means_sequencial import *
 
 def main():
+    # Controle dos argumentos
     if len(sys.argv) < 3:
         print("Uso: python k_means_concorrente_main.py <dataset_path> <n_clusters> [<output_log>](opcional)")
         return
 
+    # Lê dados da linha de comando
     dataset_path = sys.argv[1]
     n_clusters = int(sys.argv[2])
     num_processos = 0  # Pois é sequencial
@@ -17,7 +19,6 @@ def main():
 
     # Leitura do dataset
     df = pd.read_csv(dataset_path, delimiter=",")
-    df = df.reset_index(drop=False)
     list_col = None
 
     # Verifica se é o dataset de Iris com base no nome do arquivo ou estrutura esperada
@@ -26,10 +27,12 @@ def main():
         # Usa colunas especificadas do dataset Iris em iris_columns
         list_col = iris_columns.copy()
     else:
-        # usa todas as colunas do dataset para o cálculo
-        # dataset com quantidade padrão de colunas gerada (pode ser alterado no script python de geração de dados de teste)
+        # Usa todas as colunas do dataset para o cálculo
+        # Dataset com quantidade padrão de colunas gerada
         list_col = df.columns.tolist()
 
+    # Salva coluna de index para relacionar com dataset de entrada
+    df = df.reset_index(drop=False)
     list_col.append("index")
     data = df[list_col].to_numpy()
 
@@ -38,8 +41,6 @@ def main():
     result = k_means(n_clusters, data)
     fim = time.time()
     delta = fim - inicio
-
-    #print(f"Tempo de processamento: {delta:.5f} segundos")
 
     # Salvar processos, pontos e tempo de processamento no arquivo output_log, se fornecido
     if output_log:
@@ -51,7 +52,7 @@ def main():
         else:
             df_log.to_csv(output_log, mode='a', header=False, index=False)
 
-    # Salvar csv da posição dos centróides
+    # Salva csv da posição dos centróides
     centroides = list(result.keys())
     list_col_centroides = list_col.copy()
     list_col_centroides.remove("index")
@@ -60,7 +61,7 @@ def main():
         os.makedirs("./logs/Sequencial")
     df_centroides.to_csv(f"./logs/Sequencial/k_{n_clusters}_centers", index = False)
         
-    # Salvar csv dos dados com seu index e centróide a qual pertence
+    # Salva csv dos dados com seu index e centróide a qual pertence pelo index do centroide no csv dos centroides
     list_dataframes = []
     value_centroide = 0
     for key in result.keys():

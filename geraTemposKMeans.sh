@@ -18,7 +18,7 @@ n_clusters=3
 for pontos in "${quantidadePontos[@]}"; do
     for i in $(seq 1 $quantidadeExecucoes); do
         echo "Execução Sequencial - Dataset com $pontos pontos (Execução $i)..."
-        python k_means_sequencial_main.py "./datasets/dataset_${pontos}.csv" $n_clusters "./logs/log_execucao_kmeans.csv"
+        python k_means_sequencial_main.py "./datasets/dataset_${pontos}.csv" $n_clusters "./logs/log_execucao_kmeans_${n_clusters}_clusters.csv"
     done
 done
 
@@ -27,7 +27,7 @@ for processos in "${quantidadeProcessos[@]}"; do
     for pontos in "${quantidadePontos[@]}"; do
         for i in $(seq 1 $quantidadeExecucoes); do
             echo "Execução Concorrente - Dataset com $pontos pontos e $processos processo(s) (Execução $i)..."
-            python k_means_concorrente_main.py "./datasets/dataset_${pontos}.csv" $n_clusters $processos "./logs/log_execucao_kmeans.csv"
+            python k_means_concorrente_main.py "./datasets/dataset_${pontos}.csv" $n_clusters $processos "./logs/log_execucao_kmeans_${n_clusters}_clusters.csv"
         done
     done
 done
