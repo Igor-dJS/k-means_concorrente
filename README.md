@@ -23,6 +23,11 @@ Na versão concorrente, utilizamos o módulo `multiprocessing` para paralelizar 
 * **`notebook_analise_desempenho.ipynb`** : Notebook com geração de tabelas e gráficos para análise de desempenho.
 * **`geraTemposKMeans.sh`** : Script para gerar os tempos médios de execução e salvar em arquivos de logs para análise.
 
+### **Diretórios**
+
+* **`./datasets/`** : Contém os arquivos de datasets gerados com diferentes quantidades de pontos, organizados por instâncias(linhas) e atributos(colunas).
+* **`./logs/`** : Contém os arquivos de log das execuções do K-Means sequencial e concorrente. Os logs são organizados conforme os parâmetros de clusters e atributos.
+
 ## Requisitos e Instalação
 
 Este projeto utiliza as seguintes bibliotecas para sua execução:
@@ -43,12 +48,7 @@ Ou utilize o arquivo `requirements.txt` para instalação:
 
 `pip install -r requirements.txt`
 
-### **Diretórios**
-
-* **`./datasets/`** : Contém os arquivos de datasets gerados com diferentes quantidades de pontos, organizados por instâncias(linhas) e atributos(colunas).
-* **`./logs/`** : Contém os arquivos de log das execuções do K-Means sequencial e concorrente. Os logs são organizados conforme os parâmetros de clusters e atributos.
-
-## **Como Utilizar**
+### **Como Utilizar**
 
 ### **Gerar Dataset**
 
