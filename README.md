@@ -1,21 +1,21 @@
-# **Projeto K-Means: Implementação Sequencial e Concorrente**
+# **K-Means: Implementação Sequencial e Concorrente**
 
-Este projeto foi desenvolvido como parte da disciplina  **Programação Concorrente** . Ele explora o uso do algoritmo de agrupamento **K-Means** em duas implementações: sequencial e concorrente, avaliando seu desempenho em diferentes tamanhos de datasets.
+Este projeto foi desenvolvido como parte de um projeto final de implementação da disciplina  **Programação Concorrente** na Universidade Federal do Rio de Janeiro. Ele explora o uso do algoritmo de agrupamento **K-Means** em duas implementações: sequencial e concorrente, avaliando seu desempenho em diferentes tamanhos de datasets.
 
 ## **Descrição do Algoritmo K-Means**
 
-O K-Means é um algoritmo de aprendizado de máquina que organiza dados em kk**k** grupos com base em suas similaridades. Ele utiliza os seguintes passos:
+O K-Means é um algoritmo de aprendizado de máquina que organiza dados em **k** grupos com base em suas similaridades. Ele utiliza os seguintes passos:
 
-1. Escolha inicial dos centróides.
-2. Atribuição de pontos ao centróide mais próximo.
-3. Atualização dos centróides.
+1. Escolha inicial dos centróides;
+2. Atribuição de pontos ao centróide mais próximo;
+3. Atualização dos centróides;
 4. Repetição até a convergência.
 
 Na versão concorrente, utilizamos o módulo `multiprocessing` para paralelizar as etapas que envolvem cálculos independentes, como a atribuição de pontos e atualização dos centróides, mitigando o impacto do **GIL** do Python.
 
 ## **Estrutura do Projeto**
 
-* **`gera_pontos.py`** : Gera datasets personalizados para geração de logs para análise de desempenho.
+* **`gera_pontos.py`** : Gera datasets personalizados com diferentes tamanhos de linhas e colunas para geração de logs para análise de desempenho.
 * **`k_means_sequencial.py`** : Implementação da função de execução do K-Means sequencial.
 * **`k_means_concorrente.py`** : Implementação da função executada pelos processos no K-Means concorrente.
 * **`k_means_sequencial_main.py`** : Algoritmo principal para execução do K-Means sequencial.
@@ -23,9 +23,29 @@ Na versão concorrente, utilizamos o módulo `multiprocessing` para paralelizar 
 * **`notebook_analise_desempenho.ipynb`** : Notebook com geração de tabelas e gráficos para análise de desempenho.
 * **`geraTemposKMeans.sh`** : Script para gerar os tempos médios de execução e salvar em arquivos de logs para análise.
 
+## Requisitos e Instalação
+
+Este projeto utiliza as seguintes bibliotecas para sua execução:
+
+* **NumPy** : Manipulação eficiente de arrays e operações matemáticas.
+* **Pandas** : Análise e manipulação de dados estruturados.
+* **Matplotlib** : Criação de gráficos e visualizações.
+* **Seaborn** : Visualizações estatísticas aprimoradas e estilizadas.
+
+#### Como instalar
+
+1. Certifique-se de ter **Python 3.7 ou superior** instalado.
+2. Instale as dependências com o comando:
+
+   `pip install numpy pandas matplotlib seaborn`
+
+Ou utilize o arquivo `requirements.txt` para instalação:
+
+`pip install -r requirements.txt`
+
 ### **Diretórios**
 
-* **`./datasets/`** : Contém os arquivos de datasets gerados com diferentes quantidades de pontos, organizados por clusters e atributos.
+* **`./datasets/`** : Contém os arquivos de datasets gerados com diferentes quantidades de pontos, organizados por instâncias(linhas) e atributos(colunas).
 * **`./logs/`** : Contém os arquivos de log das execuções do K-Means sequencial e concorrente. Os logs são organizados conforme os parâmetros de clusters e atributos.
 
 ## **Como Utilizar**
@@ -39,7 +59,7 @@ python gera_pontos.py <quantidade_pontos> <quantidade_colunas> <arquivo_saida>
 ```
 
 * **`<quantidade_pontos>`** : Número de pontos (linhas) do dataset (ex.: 500, 1000, 10000, etc.).
-* **`<quantidade_colunas>`** : Número de atributos (colunas) para cada ponto de dados (ex.: 16, 32, etc.).
+* **`<quantidade_colunas>`** : Número de atributos (colunas) para cada ponto de dados (ex.: 3, 4, 8, 16, etc.).
 * **`<arquivo_saida>`** : Nome do arquivo onde o dataset será salvo (ex.: `dataset_500.csv`, `dataset_1000.csv`).
 
 ---
@@ -52,9 +72,11 @@ Para executar o algoritmo K-Means na versão sequencial, utilize o comando:
 python k_means_sequencial_main.py <dataset_path> <n_clusters> <output_log>(opcional)
 ```
 
-* **`<dataset_path>`** : Caminho para o dataset gerado (ex.: `./datasets/dataset_1000.csv`).
-* **`<n_clusters>`** : Número de clusters a serem formados (ex.: 3, 5).
+* **`<dataset_path>`** : Caminho para o dataset gerado (ex.: `./datasets/3_clusters_4_attributes/dataset_1000.csv`).
+* **`<n_clusters>`** : Número de clusters a serem formados (ex.: 2, 3, 4, 5, 10, etc).
 * **`<output_log>`** (opcional): Caminho para o arquivo de log onde os tempos de execução podem ser salvos.
+
+**Observação** : Caso você não queira salvar o log, o parâmetro `<output_log>` é opcional. Para isso, basta omitir o argumento de log no comando.
 
 ---
 
@@ -66,8 +88,8 @@ Para executar o algoritmo K-Means na versão concorrente, utilize o comando:
 python k_means_concorrente_main.py <dataset_path> <n_clusters> <num_processos> <output_log>(opcional)
 ```
 
-* **`<dataset_path>`** : Caminho para o dataset gerado (ex.: `./datasets/dataset_1000.csv`).
-* **`<n_clusters>`** : Número de clusters a serem formados (ex.: 3, 5).
+* **`<dataset_path>`** : Caminho para o dataset gerado (ex.: `./datasets/3_clusters_4_attributes/dataset_1000.csv`).
+* **`<n_clusters>`** : Número de clusters a serem formados (ex.: 2, 3, 4, 5, 10, etc).
 * **`<num_processos>`** : Número de processos paralelos a serem utilizados na versão concorrente (ex.: 2, 4, 8).
 * **`<output_log>`** (opcional): Caminho para o arquivo de log onde os tempos de execução podem ser salvos.
 
@@ -81,13 +103,13 @@ O script `geraTemposKMeans.sh` automatiza a execução dos algoritmos K-Means (s
 bash geraTemposKMeans.sh
 ```
 
-Esse comando irá gerar os datasets, executar o K-Means sequencial e concorrente para diferentes quantidades de pontos e processos, e salvar os logs em arquivos CSV.
+Esse comando irá gerar os datasets, executar o K-Means sequencial e concorrente para diferentes quantidades de pontos e processos, e salvar os logs em arquivos CSV no diretório de logs (ex.: `./logs/log_execucao_kmeans_3_clusters_8_attributes.csv`).
 
 ## **Testes de Corretude**
 
 ### **Descrição**
 
-Para verificar a corretude entre as versões sequencial e concorrente do algoritmo K-Means, utilizou-se o conjunto de dados  **Iris** . O algoritmo de comparação foi implementado no notebook  **`logs/compare.ipynb`** , onde são analisadas as diferenças entre os resultados dos dois métodos.
+Para verificar a corretude entre as versões sequencial e concorrente, utilizou-se o conjunto de dados **Iris** . O algoritmo de comparação foi implementado no notebook  **`logs/compare.ipynb`** , onde são analisadas as diferenças entre os resultados dos dois métodos.
 
 ### **Casos de Teste**
 
@@ -118,7 +140,7 @@ Para realizar a verificação de corretude, execute o notebook  **`logs/compare.
 
 ## **Análise de Desempenho**
 
-Para analisar o desempenho dos algoritmos K-Means (sequencial e concorrente), utilize o notebook  **`logs/analise_log_execucao_kmeans.ipynb`** . Este notebook processa os logs gerados pelo script **`geraTemposKMeans.sh`** e gera tabelas e gráficos para avaliar o  **tempo de processamento** , **aceleração** e **eficiência** dos algoritmos.
+Para analisar o desempenho dos algoritmos sequencial e concorrente, utilize o notebook **`logs/analise_log_execucao_kmeans.ipynb`** . Este notebook processa os logs gerados pelo script **`geraTemposKMeans.sh`** e gera tabelas e gráficos para avaliar o **tempo de processamento** , **aceleração** e **eficiência** dos algoritmos.
 
 ### **Bibliotecas Utilizadas**
 

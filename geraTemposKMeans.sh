@@ -6,7 +6,7 @@ quantidadeExecucoes=5
 quantidadePontos=("500" "1000" "10000" "100000" "250000" "500000") # Quantidades de pontos nos conjuntos de dados
 quantidadeProcessos=("1" "2" "4" "8" "10" "12") # Quantidades de processos a serem testadas
 n_clusters=3
-n_columns=4
+n_columns=6
 
 # Diretório para salvar os datasets
 datasets_dir="./datasets/${n_clusters}_clusters_${n_columns}_attributes"

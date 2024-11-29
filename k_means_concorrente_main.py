@@ -2,7 +2,6 @@ import sys
 import os
 import numpy as np
 import pandas as pd
-from matplotlib import pyplot as plt
 from multiprocessing import Process, Semaphore, Value, Lock
 from multiprocessing import shared_memory  # Adicionado para uso de memória compartilhada
 from k_means_concorrente import *
