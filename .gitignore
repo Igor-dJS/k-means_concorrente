@@ -1,0 +1,6 @@
+datasets/test.ipynb
+k-means_concorrente
+__pycache__
+.ipynb_checkpoints
+./logs/.ipynb_checkpoints
+venv

@@ -20,7 +20,7 @@ Na versão concorrente, utilizamos o módulo `multiprocessing` para paralelizar 
 * **`k_means_concorrente.py`** : Implementação da função executada pelos processos no K-Means concorrente.
 * **`k_means_sequencial_main.py`** : Algoritmo principal para execução do K-Means sequencial.
 * **`k_means_concorrente_main.py`** : Algoritmo principal para execução do K-Means concorrente.
-* **`notebook_analise_desempenho.ipynb`** : Notebook com geração de tabelas e gráficos para análise de desempenho.
+* **`./logs/analise_log_execucao_kmeans.ipynb`** : Notebook com geração de tabelas e gráficos para análise de desempenho.
 * **`geraTemposKMeans.sh`** : Script para gerar os tempos médios de execução e salvar em arquivos de logs para análise.
 
 ### **Diretórios**
@@ -30,16 +30,16 @@ Na versão concorrente, utilizamos o módulo `multiprocessing` para paralelizar 
 
 ## Requisitos e Instalação
 
-Este projeto utiliza as seguintes bibliotecas para sua execução:
+Este projeto utiliza as seguintes bibliotecas para execução:
 
-* **NumPy** : Manipulação eficiente de arrays e operações matemáticas.
-* **Pandas** : Análise e manipulação de dados estruturados.
-* **Matplotlib** : Criação de gráficos e visualizações.
-* **Seaborn** : Visualizações estatísticas aprimoradas e estilizadas.
+* **NumPy**
+* **Pandas**
+* **Matplotlib**
+* **Seaborn**
 
 #### Como instalar
 
-1. Certifique-se de ter **Python 3.7 ou superior** instalado.
+1. Certifique-se de ter **Python 3.8 ou superior** instalado.
 2. Instale as dependências com o comando:
 
    `pip install numpy pandas matplotlib seaborn`
@@ -59,7 +59,7 @@ python gera_pontos.py <quantidade_pontos> <quantidade_colunas> <arquivo_saida>
 ```
 
 * **`<quantidade_pontos>`** : Número de pontos (linhas) do dataset (ex.: 500, 1000, 10000, etc.).
-* **`<quantidade_colunas>`** : Número de atributos (colunas) para cada ponto de dados (ex.: 3, 4, 8, 16, etc.).
+* **`<quantidade_colunas>`** : Número de atributos (colunas) (ex.: 3, 4, 8, 16, etc.).
 * **`<arquivo_saida>`** : Nome do arquivo onde o dataset será salvo (ex.: `dataset_500.csv`, `dataset_1000.csv`).
 
 ---
@@ -146,10 +146,10 @@ Para analisar o desempenho dos algoritmos sequencial e concorrente, utilize o no
 
 O notebook faz uso das seguintes bibliotecas para manipulação de dados e visualização:
 
-* **Pandas** : Para manipulação de dados e criação de DataFrames.
-* **Matplotlib** : Para geração de gráficos estáticos.
-* **Seaborn** : Para criar visualizações mais avançadas e com maior impacto visual.
-* **NumPy** : Para operações numéricas e cálculos rápidos.
+* **Pandas**
+* **Matplotlib**
+* **Seaborn**
+* **NumPy**
 
 ### **O que o Notebook Faz**
 
